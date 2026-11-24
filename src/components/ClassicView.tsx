@@ -1,5 +1,5 @@
 import { motion, type Variants } from 'motion/react';
-import { Fragment, useEffect, useState, type MouseEvent, type ReactNode } from 'react';
+import { Fragment, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import { BotAvatar, type BotAvatarType } from 'bot-avatars';
 import type { Content } from '../types';
 import type { Theme } from '../lib/theme';
@@ -47,19 +47,95 @@ let heroHasEntered = false;
 const HERO_BOTS: BotAvatarType[] = ['mech', 'hexagon'];
 const CONTACT_BOTS: BotAvatarType[] = ['clover', 'flower', 'ghost', 'star'];
 
+/** bot-avatars' hop cycle in the working state (its `D0`), in ms. */
+const HOP_MS = 680;
+/** Two bots whose start times are closer than this on the hop cycle look like they hop together. */
+const MIN_PHASE_GAP_MS = 120;
+
 /**
- * A working bot that starts hopping after its own random delay (0 to 1.2 s). Every working bot
- * starts its hop cycle at the same point, so a row of them would bounce in unison; holding each one
- * still for a moment offsets the cycles for good.
+ * Start times (ms) for a row of working bots: the first at 0, each next one 0.4 to 1.2 s after the
+ * one before. Since the hop repeats every 680 ms, a gap near a whole number of hops would put two
+ * bots back in step, so gaps are redrawn until every pair sits apart on the cycle.
  */
-function StaggeredBot({ type, reducedMotion }: { type: BotAvatarType; reducedMotion: boolean }) {
-  const [delay] = useState(() => Math.random() * 1200);
-  const [started, setStarted] = useState(false);
+function staggerStarts(count: number): number[] {
+  const starts = [0];
+  while (starts.length < count) {
+    const previous = starts[starts.length - 1];
+    let next = previous + 400 + Math.random() * 800;
+    for (let tries = 0; tries < 30; tries++) {
+      const candidate = previous + 400 + Math.random() * 800;
+      const apart = starts.every((start) => {
+        const phase = (candidate - start) % HOP_MS;
+        return Math.min(phase, HOP_MS - phase) >= MIN_PHASE_GAP_MS;
+      });
+      next = candidate;
+      if (apart) break;
+    }
+    starts.push(next);
+  }
+  return starts;
+}
+
+/**
+ * The working bots beside the Contact heading. Every working bot starts its hop cycle at the same
+ * point, so each one is held still until its own start time. bot-avatars only animates a bot while
+ * it is on screen and the tab is visible, so the start clock follows the same rule: it runs on
+ * animation frames, only while the row is in view. A plain timer would run out while Contact is
+ * still far down the page, and the bots would all begin together when it scrolls in.
+ */
+function ContactBots({ reducedMotion }: { reducedMotion: boolean }) {
+  const rowRef = useRef<HTMLSpanElement>(null);
+  const [starts] = useState(() => staggerStarts(CONTACT_BOTS.length));
+  const [startedCount, setStartedCount] = useState(0);
+
   useEffect(() => {
-    const timer = window.setTimeout(() => setStarted(true), delay);
-    return () => window.clearTimeout(timer);
-  }, [delay]);
-  return <BotAvatar className="bot-avatar" type={type} state="working" shading="plastic" size={64} paused={reducedMotion || !started} />;
+    const row = rowRef.current;
+    if (!row || reducedMotion) return;
+    let elapsed = 0;
+    let last = 0;
+    let frame = 0;
+    let count = 0;
+    const tick = (now: number) => {
+      frame = 0;
+      // Same 100 ms cap per frame as bot-avatars, so both clocks pause and resume together.
+      if (last) elapsed += Math.min(100, now - last);
+      last = now;
+      while (count < starts.length && elapsed >= starts[count]) count++;
+      setStartedCount(count);
+      if (count < starts.length) frame = requestAnimationFrame(tick);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      const visible = entry?.isIntersecting ?? true;
+      if (visible && !frame && count < starts.length) {
+        last = 0;
+        frame = requestAnimationFrame(tick);
+      } else if (!visible && frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    });
+    observer.observe(row);
+    return () => {
+      observer.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [starts, reducedMotion]);
+
+  return (
+    <span className="section__bots" aria-hidden="true" ref={rowRef}>
+      {CONTACT_BOTS.map((type, index) => (
+        <BotAvatar
+          key={type}
+          className="bot-avatar"
+          type={type}
+          state="working"
+          shading="plastic"
+          size={64}
+          paused={reducedMotion || index >= startedCount}
+        />
+      ))}
+    </span>
+  );
 }
 
 /** Puts the role's chosen top skills first, then the rest in source order. */
@@ -291,11 +367,7 @@ export default function ClassicView({ content, theme, reducedMotion, onOpenInGra
             <>
               Contact
               {/* Decorative: the heading's accessible name stays "Contact". */}
-              <span className="section__bots" aria-hidden="true">
-                {CONTACT_BOTS.map((type) => (
-                  <StaggeredBot key={type} type={type} reducedMotion={reducedMotion} />
-                ))}
-              </span>
+              <ContactBots reducedMotion={reducedMotion} />
             </>
           )}
         >

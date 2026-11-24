@@ -1,4 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="18" fill="#1B2742"/>
-  <path d="M32 10C45 9 55 19 53 33C51 46 42 55 29 54C16 53 9 43 11 29C13 18 21 11 32 10Z" fill="#E9DFC9" stroke="#7FA58B" stroke-width="3"/>
+  <title>DS</title>
+  <rect width="64" height="64" rx="14" fill="#05070d"/>
+  <g fill="none" stroke="#6ea8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 18H18A14 14 0 0 1 18 46H10Z"/>
+    <path d="M54 22C51 18 46 17 43 18C38 19 37 24 39 27C41 30 46 31 49 32C54 34 55 39 53 42C51 46 44 47 38 43"/>
+  </g>
+  <circle cx="10" cy="18" r="4.5" fill="#8bf5c8"/>
+  <circle cx="10" cy="46" r="4.5" fill="#8bf5c8"/>
+  <circle cx="54" cy="22" r="4.5" fill="#b79cff"/>
+  <circle cx="38" cy="43" r="5.5" fill="#f5c26b"/>
 </svg>
