@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import type { Theme } from '../lib/theme';
 
 interface Particle {
   x: number;
@@ -9,18 +10,33 @@ interface Particle {
   hue: 'mint' | 'blue' | 'amber' | 'ink';
 }
 
-const COLORS = {
-  mint: [139, 245, 200],
-  blue: [110, 168, 255],
-  amber: [245, 194, 107],
-  ink: [185, 193, 208],
-} as const;
+type RGB = readonly [number, number, number];
+
+/** Dot colours per theme, plus the two link inks (near the cursor, and resting). */
+const PALETTE: Record<Theme, Record<Particle['hue'] | 'linkNear' | 'link', RGB>> = {
+  dark: {
+    mint: [139, 245, 200],
+    blue: [110, 168, 255],
+    amber: [245, 194, 107],
+    ink: [185, 193, 208],
+    linkNear: [139, 245, 200],
+    link: [160, 175, 200],
+  },
+  light: {
+    mint: [47, 138, 102],
+    blue: [74, 116, 180],
+    amber: [201, 138, 30],
+    ink: [138, 124, 104],
+    linkNear: [47, 138, 102],
+    link: [150, 134, 110],
+  },
+};
 
 /**
  * A living constellation behind the hero: drifting nodes that link up when
  * close and light up around the cursor. A nod to the knowledge graph.
  */
-export default function HeroNetwork({ reducedMotion }: { reducedMotion: boolean }) {
+export default function HeroNetwork({ reducedMotion, theme }: { reducedMotion: boolean; theme: Theme }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -36,6 +52,9 @@ export default function HeroNetwork({ reducedMotion }: { reducedMotion: boolean 
     let visible = true;
     const mouse = { x: -9999, y: -9999 };
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const colors = PALETTE[theme];
+    const [nr, ng, nb] = colors.linkNear;
+    const [lr, lg, lb] = colors.link;
 
     const seed = () => {
       const count = Math.round(Math.min(110, Math.max(36, (width * height) / 14000)));
@@ -75,7 +94,7 @@ export default function HeroNetwork({ reducedMotion }: { reducedMotion: boolean 
             const my = (a.y + b.y) / 2 - mouse.y;
             const near = Math.max(0, 1 - Math.hypot(mx, my) / 220);
             const alpha = (1 - d / linkDist) * (0.14 + near * 0.5);
-            ctx.strokeStyle = near > 0.05 ? `rgba(139,245,200,${alpha})` : `rgba(160,175,200,${alpha})`;
+            ctx.strokeStyle = near > 0.05 ? `rgba(${nr},${ng},${nb},${alpha})` : `rgba(${lr},${lg},${lb},${alpha})`;
             ctx.lineWidth = 0.6 + near * 0.6;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
@@ -85,7 +104,7 @@ export default function HeroNetwork({ reducedMotion }: { reducedMotion: boolean 
         }
       }
       for (const p of particles) {
-        const [r, g, b] = COLORS[p.hue];
+        const [r, g, b] = colors[p.hue];
         const near = Math.max(0, 1 - Math.hypot(p.x - mouse.x, p.y - mouse.y) / 200);
         const radius = p.r + near * 1.6;
         if (p.hue === 'amber' || near > 0.2) {
@@ -164,7 +183,7 @@ export default function HeroNetwork({ reducedMotion }: { reducedMotion: boolean 
       window.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerleave', onLeave);
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, theme]);
 
   return <canvas ref={canvasRef} className="hero__network" aria-hidden="true" />;
 }

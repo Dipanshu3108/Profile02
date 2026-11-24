@@ -1,5 +1,7 @@
 import type { MouseEvent } from 'react';
+import { ThinkingOrb } from 'thinking-orbs';
 import type { Course, Project, Skill } from '../types';
+import type { Theme } from '../lib/theme';
 import SkillChips from './SkillChips';
 import { ExternalIcon, GraphIcon } from './icons';
 
@@ -8,9 +10,15 @@ interface ProjectCardProps {
   skills: Skill[];
   course?: Course;
   onOpenInGraph: (id: string, origin: { x: number; y: number }) => void;
+  /** Freezes the "working" orb beside Explore in graph. */
+  reducedMotion: boolean;
+  theme: Theme;
 }
 
-export default function ProjectCard({ project, skills, course, onOpenInGraph }: ProjectCardProps) {
+/** The orb is a canvas, so it can't read CSS: these match --mint in each theme (tokens.css). */
+const ORB_INK: Record<Theme, string> = { dark: '#8bf5c8', light: '#2b7356' };
+
+export default function ProjectCard({ project, skills, course, onOpenInGraph, reducedMotion, theme }: ProjectCardProps) {
   const primaryUrl = project.githubUrl ?? project.pdfUrl;
   const primaryLabel = project.githubUrl ? 'Open GitHub' : 'Open PDF';
   const hasBothLinks = Boolean(project.githubUrl && project.pdfUrl);
@@ -51,7 +59,14 @@ export default function ProjectCard({ project, skills, course, onOpenInGraph }: 
             <a href={project.pdfUrl} target="_blank" rel="noopener noreferrer">PDF <ExternalIcon /></a>
           </span>
         ) : (
-          <span className="project-card__action">{primaryUrl ? <>{primaryLabel} <ExternalIcon /></> : 'Explore in graph'}</span>
+          <span className="project-card__action">
+            {primaryUrl ? <>{primaryLabel} <ExternalIcon /></> : (
+              <>
+                <ThinkingOrb className="project-card__orb" state="working" size={64} theme={theme} color={ORB_INK[theme]} paused={reducedMotion} aria-hidden="true" />
+                 Explore in graph
+              </>
+            )}
+          </span>
         )}
       </div>
     </article>

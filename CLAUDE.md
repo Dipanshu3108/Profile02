@@ -46,8 +46,10 @@ There is no test suite. Verify with typecheck, build, and the browser.
 
 - `src/lib/content.ts`: typed content, `focusSkills`, `sortByFocus`.
 - `src/lib/graph.ts`: builds nodes and edges. Edge kinds: structural, worked-at, part-of, studied-in, used-in, related, certified.
-- `src/lib/urlState.ts`: `?mode=classic|graph&node=<id>` plus localStorage. Deep links must keep working.
-- `src/App.tsx`: mode switch with a View Transitions circular reveal, and a lazy-loaded `GraphView` chunk (~430 KB gzip).
+- `src/lib/urlState.ts`: `?mode=classic|graph&node=<id>`. Classic is the main view: every visit opens it unless the link asks for the graph (the last-used view is deliberately not remembered). Deep links must keep working.
+- `src/lib/theme.ts`: `useTheme` (dark default, light remembered in localStorage, writes `html[data-theme]` and the theme-color meta). `index.html` applies the saved theme before first paint.
+- `src/lib/reveal.ts`: `circularReveal`, the View Transitions circle used by both the mode switch (750 ms) and the theme switch (520 ms, grows from the sun/moon button).
+- `src/App.tsx`: mode and theme switches (both via `circularReveal`), and a lazy-loaded `GraphView` chunk (~420 KB gzip).
 - `src/components/Graph3D.tsx`: the 3D scene. See the gotchas below.
 - `src/components/InfoCard.tsx`: per-type cards. Every connection is clickable.
 - `src/components/ClassicView.tsx`, `ProjectCard.tsx`, `HeroNetwork.tsx` (2D canvas constellation), `SkillMarquee.tsx` (curated: focus + top role skills + skills used in 2+ projects).
@@ -55,13 +57,17 @@ There is no test suite. Verify with typecheck, build, and the browser.
 
 ## Design system (current)
 
-- Dark only: bg `#05070d`; ink `#eef1f6` / `#b9c1d0` / `#7d879b`; accents mint `#8bf5c8`, blue `#6ea8ff`, violet `#b79cff`, amber `#f5c26b` (focus skills only). `data-theme="dark"` is always set, and the thinking-orbs read it.
+- Two themes, dark is the default. Dark: bg `#05070d`; ink `#eef1f6` / `#b9c1d0` / `#7d879b`; accents mint `#8bf5c8`, blue `#6ea8ff`, violet `#b79cff`, amber `#f5c26b` (focus skills only).
+- Light (owner's brief: warm sand, sage mint): bg `#f4ede2`, raised `#fbf7f0`; ink `#2a251e` / `#4f483d` / `#6f665a`; mint `#2b7356`, amber `#9a5f0c`. Every text token holds at least 4.5:1. It is a `:root[data-theme='light']` block in `tokens.css` that redefines the same token names, so stylesheets need no theme rules. Keep it that way: a new token needs a value in both blocks.
+- Canvas and WebGL can't read CSS, so their colours are per-theme maps: `GRAPH_PALETTE` in `graphColors.ts` (light turns bloom off, since the sand ground would bloom; it also keeps fog very thin, self-glow at 0.3 and links at 0.8 opacity, because fog toward sand washes the whole scene out), `PALETTE` in `HeroNetwork.tsx`, `ORB_INK` in `ProjectCard.tsx`. thinking-orbs and bot-avatars read `data-theme` themselves.
+- A theme switch in Graph mode hands `nodeThreeObject` a new accessor, which rebuilds every node mesh (old ones are disposed).
 - Every colour goes through `src/styles/tokens.css`. Translucent tints are named `--<hue>-a<percent>` (e.g. `--mint-a35`); add a token rather than writing `rgba()` in a stylesheet.
 - Fonts: Bricolage Grotesque (display), Inter (body), JetBrains Mono (small meta labels: dates, card types, counts).
 - Spacing sits on a 4px scale (padding, margin, gap). Headings use `text-wrap: balance`, body copy `pretty`. Date ranges read "Aug 2024 to Present" (no dashes).
 - No gradient text, no coloured zero-offset glows, no eyebrow/kicker lines above section headings, no middle-dot meta strings or arrows glued to labels, no decorative pulse dots. Section headings are plain (About, Experience, Education, Projects, Contact). Icons are drawn SVGs in `src/components/icons.tsx`, not glyphs.
 - Node colours live in `src/components/graphColors.ts`. Shapes: profile = icosahedron with a ring, experience = cube, education = rotated cube, course = tetrahedron, project = hexagonal prism, certification = dodecahedron, skill = sphere, contact = octahedron.
-- thinking-orbs appear in exactly two places: graph loading, and the info-card empty state. Keep the footer credit.
+- thinking-orbs appear in three places: graph loading, the info-card empty state, and a 64px `working` orb (tinted mint) beside every project card's "Explore in graph" (always animating; negative margins let it overhang so the row keeps its text height). Keep the footer credit.
+- bot-avatars (owner's picks, all `shading="plastic"`, 64px): `mech` and `hexagon` idle after the last word of the hero name (they wrap below it on narrow screens), and `clover`, `flower`, `ghost`, `star` in `state="working"` beside the Contact heading. Working bots all start their hop cycle at the same point, so each Contact bot (`StaggeredBot`) stays paused for a random 0 to 1.2 s first; `seed` only offsets blinks and glances. All decorative (`aria-hidden`). Every `BotAvatar` needs `className="bot-avatar"`: its canvas is 1.5x the bot's size, and the global `canvas { max-width: 100% }` would otherwise squash it sideways. Keep the footer credit.
 
 ## Graph behaviour (keep these when editing)
 
@@ -87,7 +93,7 @@ There is no test suite. Verify with typecheck, build, and the browser.
 
 ## Accessibility floor
 
-- Looping motion (marquee, grain, aurora, shimmer, pulses, hero canvas, graph auto-rotate) has a pause switch in the header (`useMotionPaused`, `html[data-motion]`). Any new infinite animation must be added to the paused and reduced-motion lists at the end of `base.css`.
+- There is no pause switch in the header (the owner removed it). Looping motion (marquee, grain, hero canvas, graph auto-rotate, the cards' orbs, the bots) stops only under `prefers-reduced-motion`: CSS loops via the list at the end of `base.css`, canvas loops via `usePrefersReducedMotion`. Any new infinite animation must be added to one of those.
 - `prefers-reduced-motion` turns the loops off and hides the scroll cue; it no longer shortens every animation to 0.01ms.
 - Switching mode pushes a history entry, so Back returns to the previous view. Node changes inside the graph replace the entry.
 - `GraphErrorBoundary` shows a fallback (with "Switch to Classic") if WebGL is missing or the graph chunk fails to load.

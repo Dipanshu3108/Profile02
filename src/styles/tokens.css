@@ -74,3 +74,69 @@
   --gutter: clamp(16px, 4vw, 56px);
   --max: 1240px;
 }
+
+/*
+ * Light theme: warm sand ground, deep warm ink, sage mint accents. Chosen by the visitor from the
+ * header switch (dark stays the default). Same token names, so every stylesheet follows unchanged.
+ * Here the "white" tints lift a surface toward paper, and "black" casts warm, soft shadows.
+ * Text tokens all hold at least 4.5:1 on --bg and --bg-raised.
+ */
+:root[data-theme='light'] {
+  --bg: #f4ede2;
+  --bg-raised: #fbf7f0;
+  --navy: #e4dccb;
+  --glass: rgba(255, 252, 246, 0.55);
+  --glass-strong: rgba(251, 247, 240, 0.86);
+  --line: rgba(74, 58, 36, 0.12);
+  --line-strong: rgba(74, 58, 36, 0.24);
+
+  --ink: #2a251e;
+  --ink-soft: #4f483d;
+  --ink-muted: #6f665a;
+
+  --mint: #2b7356;
+  --sage: #6f8f78;
+  --blue: #3c66a6;
+  --violet: #6a51a8;
+  --sand: #8a6a3e;
+  --amber: #9a5f0c;
+  --mint-light: #348563;
+  --pink: #9c3f8c;
+
+  --white-a01: rgba(255, 252, 246, 0.3);
+  --white-a03: rgba(255, 252, 246, 0.5);
+  --white-a04: rgba(255, 252, 246, 0.6);
+  --white-a05: rgba(255, 252, 246, 0.7);
+  --white-a06: rgba(255, 252, 246, 0.85);
+
+  --black-a35: rgba(92, 70, 40, 0.1);
+  --black-a40: rgba(92, 70, 40, 0.12);
+  --black-a45: rgba(92, 70, 40, 0.14);
+
+  --panel-a60: rgba(250, 246, 239, 0.6);
+  --panel-a72: rgba(250, 246, 239, 0.76);
+  --panel-a88: rgba(250, 246, 239, 0.9);
+
+  /* The hero's ground glow: sage mint top right, warm clay bottom left. */
+  --navy-a70: rgba(236, 206, 172, 0.55);
+  --navy-a90: rgba(190, 216, 196, 0.7);
+
+  --mint-a06: rgba(43, 115, 86, 0.06);
+  --mint-a08: rgba(43, 115, 86, 0.08);
+  --mint-a18: rgba(43, 115, 86, 0.16);
+  --mint-a30: rgba(43, 115, 86, 0.24);
+  --mint-a35: rgba(43, 115, 86, 0.3);
+  --mint-a40: rgba(43, 115, 86, 0.36);
+  --mint-a50: rgba(43, 115, 86, 0.45);
+
+  --amber-a07: rgba(154, 95, 12, 0.07);
+  --amber-a08: rgba(154, 95, 12, 0.08);
+  --amber-a35: rgba(154, 95, 12, 0.3);
+  --amber-a45: rgba(154, 95, 12, 0.4);
+
+  --blue-a10: rgba(60, 102, 166, 0.08);
+  --blue-a12: rgba(60, 102, 166, 0.1);
+
+  --pink-a06: rgba(156, 63, 140, 0.05);
+  --pink-a45: rgba(156, 63, 140, 0.4);
+}

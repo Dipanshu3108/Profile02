@@ -6,6 +6,16 @@
     <title>Dipanshu Singh, AI Engineer</title>
     <meta name="description" content="Dipanshu Singh is an AI Engineer designing and optimizing AI-powered applications from prototype to production. Explore his experience, projects and knowledge graph." />
     <meta name="theme-color" content="#05070d" />
+    <script>
+      // Apply the saved theme before first paint, so a light-theme visitor never sees a dark flash.
+      try {
+        var theme = localStorage.getItem('dipanshu-portfolio-theme') === 'light' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = theme;
+        if (theme === 'light') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f4ede2');
+      } catch (e) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Dipanshu Singh, AI Engineer" />

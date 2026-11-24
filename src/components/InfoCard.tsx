@@ -89,7 +89,7 @@ export default function InfoCard({ content, graph, nodeId, onJump, onClear }: In
   if (!node) {
     body = (
       <div className="info-empty">
-        <ThinkingOrb state="breathing" size={64} theme="auto" />
+        <ThinkingOrb state="composing" size={64} theme="auto" />
         <p className="info-empty__title">Select a node to see details.</p>
         <p>Shapes are types and lines are connections. Drag to orbit, scroll to zoom.</p>
       </div>

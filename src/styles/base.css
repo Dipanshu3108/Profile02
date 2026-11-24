@@ -11,6 +11,10 @@ html {
   color-scheme: dark;
 }
 
+html[data-theme='light'] {
+  color-scheme: light;
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -33,6 +37,12 @@ body::after {
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grain 1.2s steps(6) infinite;
+}
+
+/* Noise is grey: on sand it reads as dirt, so it multiplies in softer. */
+html[data-theme='light'] body::after {
+  opacity: 0.04;
+  mix-blend-mode: multiply;
 }
 
 @keyframes grain {
@@ -74,6 +84,15 @@ svg,
 canvas {
   max-width: 100%;
   display: block;
+}
+
+/*
+ * bot-avatars draws its canvas 1.5x the bot's size (room for hops and flips) and pulls it back with
+ * negative margins. The cap above would clamp that width to the wrapper but not the height,
+ * squashing the bot sideways.
+ */
+canvas.bot-avatar {
+  max-width: none;
 }
 
 h1,
@@ -268,7 +287,7 @@ li {
 }
 
 /* Pauses the looping background motion (WCAG 2.2.2). Shown unless the OS already asks for reduced motion. */
-.motion-toggle,
+.theme-toggle,
 .menu-toggle {
   display: grid;
   place-items: center;
@@ -282,21 +301,16 @@ li {
   transition: color 0.2s, background-color 0.2s, border-color 0.2s;
 }
 
-.motion-toggle svg,
+.theme-toggle svg,
 .menu-toggle svg {
   width: 14px;
   height: 14px;
 }
 
-.motion-toggle:hover,
+.theme-toggle:hover,
 .menu-toggle:hover {
   color: var(--ink);
   border-color: var(--line-strong);
-}
-
-.motion-toggle[aria-pressed='true'] {
-  color: var(--mint);
-  border-color: var(--mint-a40);
 }
 
 /* ----------------------------------------------------------------- Buttons */
@@ -338,7 +352,7 @@ li {
 }
 
 .mode-toggle__button:active,
-.motion-toggle:active,
+.theme-toggle:active,
 .menu-toggle:active,
 .chip--button:active,
 .filter-chip:active,
@@ -542,15 +556,10 @@ main {
 /* ------------------------------------------------------- Looping motion */
 
 /*
- * Every infinite CSS loop on the site (the hero canvas and graph auto-rotate are paused in JS).
- * The header switch freezes them where they are, so the marquee keeps its place;
- * reduced motion turns them off entirely.
+ * Every infinite loop on the site stops when the visitor's device asks for reduced motion.
+ * CSS loops are listed below; the canvas loops (hero canvas, graph auto-rotate, the project
+ * cards' orbs, the bots) are paused in JS from usePrefersReducedMotion.
  */
-html[data-motion='paused'] body::after,
-html[data-motion='paused'] .marquee__row {
-  animation-play-state: paused;
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

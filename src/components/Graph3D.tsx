@@ -6,34 +6,13 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { ThinkingOrb } from 'thinking-orbs';
 import type { EdgeKind, GraphData, GraphNode, NodeType } from '../lib/graph';
+import type { Theme } from '../lib/theme';
 import type { VisibleTypes } from './FilterChips';
-import { FOCUS_COLOR, TYPE_COLOR } from './graphColors';
+import { GRAPH_PALETTE, type GraphPalette } from './graphColors';
 
 type GNode = NodeObject<GraphNode>;
 type GLink = LinkObject<GraphNode, { kind: EdgeKind; id: string; faint: boolean }>;
 
-const MINT = '#8bf5c8';
-const BG = '#05070d';
-const DIM_LINK = '#131a29';
-const FAINT_LINK = '#1b2231';
-const KIND_COLOR: Record<EdgeKind, string> = {
-  structural: '#4f6a9a',
-  'worked-at': '#6ea8ff',
-  'part-of': '#8b78c9',
-  'studied-in': '#8b78c9',
-  'used-in': '#3a4458',
-  related: '#4a5a52',
-  certified: '#8a6a9a',
-};
-const KIND_LIT: Record<EdgeKind, string> = {
-  structural: '#9cc2ff',
-  'worked-at': '#b3d1ff',
-  'part-of': '#d4c4ff',
-  'studied-in': '#d4c4ff',
-  'used-in': '#8bf5c8',
-  related: '#c8f5df',
-  certified: '#f3c4ff',
-};
 const LINK_DISTANCE: Record<EdgeKind, number> = {
   structural: 80,
   'worked-at': 55,
@@ -70,6 +49,8 @@ interface Visual {
   labelBase: { scale: THREE.Vector3; y: number };
   labelZoom: number;
   node: GraphNode;
+  /** The theme the meshes were painted for; a theme switch rebuilds them. */
+  theme: Theme;
 }
 
 /** Grows a label about its top edge, so it stays clear of the node above it. */
@@ -81,6 +62,15 @@ function applyLabelZoom(visual: Visual, factor: number) {
 }
 
 let hasSettledOnce = false;
+
+function disposeVisual(visual: Visual) {
+  visual.group.traverse((object) => {
+    const mesh = object as THREE.Mesh;
+    mesh.geometry?.dispose();
+    const material = mesh.material as THREE.Material | THREE.Material[] | undefined;
+    (Array.isArray(material) ? material : material ? [material] : []).forEach((item) => item.dispose());
+  });
+}
 
 function idOf(end: GLink['source']): string {
   return typeof end === 'object' && end !== null ? String((end as GNode).id) : String(end);
@@ -94,9 +84,10 @@ function baseGlow(node: GraphNode): number {
   return 0.2;
 }
 
-function makeVisual(node: GraphNode): Visual {
+function makeVisual(node: GraphNode, theme: Theme): Visual {
+  const palette = GRAPH_PALETTE[theme];
   const s = node.size;
-  const color = new THREE.Color(node.focus ? FOCUS_COLOR : TYPE_COLOR[node.type]);
+  const color = new THREE.Color(node.focus ? palette.focus : palette.type[node.type]);
   let geometry: THREE.BufferGeometry;
   switch (node.type) {
     case 'profile': geometry = new THREE.IcosahedronGeometry(s, 1); break;
@@ -111,7 +102,7 @@ function makeVisual(node: GraphNode): Visual {
   const coreMat = new THREE.MeshStandardMaterial({
     color,
     emissive: color,
-    emissiveIntensity: baseGlow(node),
+    emissiveIntensity: baseGlow(node) * palette.glow,
     roughness: 0.3,
     metalness: 0.2,
     transparent: true,
@@ -130,16 +121,16 @@ function makeVisual(node: GraphNode): Visual {
   };
 
   if (node.type === 'profile') {
-    const mat = new THREE.MeshBasicMaterial({ color: MINT, wireframe: true, transparent: true, opacity: 0.35 });
+    const mat = new THREE.MeshBasicMaterial({ color: palette.ring, wireframe: true, transparent: true, opacity: 0.35 });
     addExtra(new THREE.Mesh(new THREE.IcosahedronGeometry(s * 1.55, 1), mat), mat);
   }
   if (node.type === 'profile' || node.focus) {
-    const mat = new THREE.MeshBasicMaterial({ color: node.focus ? FOCUS_COLOR : MINT, transparent: true, opacity: 0.85 });
+    const mat = new THREE.MeshBasicMaterial({ color: node.focus ? palette.focus : palette.ring, transparent: true, opacity: 0.85 });
     const ring = new THREE.Mesh(new THREE.TorusGeometry(s * 2, Math.max(0.3, s * 0.05), 8, 80), mat);
     ring.rotation.x = Math.PI / 2.4;
     addExtra(ring, mat);
     if (node.focus) {
-      const mat2 = new THREE.MeshBasicMaterial({ color: FOCUS_COLOR, transparent: true, opacity: 0.45 });
+      const mat2 = new THREE.MeshBasicMaterial({ color: palette.focus, transparent: true, opacity: 0.45 });
       const ring2 = new THREE.Mesh(new THREE.TorusGeometry(s * 2.6, 0.2, 8, 80), mat2);
       ring2.rotation.y = Math.PI / 2.4;
       addExtra(ring2, mat2);
@@ -161,11 +152,11 @@ function makeVisual(node: GraphNode): Visual {
   const label = new SpriteText(
     node.focus ? `✦ ${node.label}` : node.label,
     node.type === 'profile' ? 6.5 : node.type === 'skill' || node.type === 'certification' ? (node.focus ? 4.4 : 3.2) : node.type === 'course' ? 3.4 : 4.2,
-    node.focus ? '#e8b65f' : '#c9d0dc',
+    node.focus ? palette.label.focus : palette.label.ink,
   );
   label.fontFace = 'Inter Variable, Inter, system-ui, sans-serif';
   label.fontWeight = '600';
-  label.backgroundColor = 'rgba(5,7,13,0.55)';
+  label.backgroundColor = palette.label.background;
   label.padding = [3, 1.6];
   label.borderRadius = 2.5;
   (label.material as THREE.SpriteMaterial).depthWrite = false;
@@ -174,7 +165,7 @@ function makeVisual(node: GraphNode): Visual {
   label.visible = !hoverOnlyLabel(node);
   group.add(label);
 
-  return { group, core, coreMat, extras, label, labelBase: { scale: label.scale.clone(), y: label.position.y }, labelZoom: 1, node };
+  return { group, core, coreMat, extras, label, labelBase: { scale: label.scale.clone(), y: label.position.y }, labelZoom: 1, node, theme };
 }
 
 interface Graph3DProps {
@@ -183,12 +174,11 @@ interface Graph3DProps {
   onSelect: (id: string | null) => void;
   visibleTypes: VisibleTypes;
   reducedMotion: boolean;
-  /** The visitor paused the looping motion: no auto-rotate, everything else unchanged. */
-  motionPaused?: boolean;
   resetSignal: number;
+  theme: Theme;
 }
 
-export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, reducedMotion, motionPaused = false, resetSignal }: Graph3DProps) {
+export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, reducedMotion, resetSignal, theme }: Graph3DProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const fgRef = useRef<ForceGraphMethods<GNode, GLink>>(undefined);
   const [api, setApi] = useState<ForceGraphMethods<GNode, GLink> | null>(null);
@@ -197,6 +187,9 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
     setApi(instance);
   }, []);
   const visuals = useRef(new Map<string, Visual>());
+  const palette: GraphPalette = GRAPH_PALETTE[theme];
+  const bloomRef = useRef<UnrealBloomPass | null>(null);
+  const starsRef = useRef<THREE.PointsMaterial | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [cursorId, setCursorId] = useState<string | null>(null);
@@ -207,8 +200,8 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
   const selectedRef = useRef(selectedId);
   selectedRef.current = selectedId;
   // Read by the orbit listeners, which are attached once per scene setup.
-  const autoRotateRef = useRef(!reducedMotion && !motionPaused);
-  autoRotateRef.current = !reducedMotion && !motionPaused;
+  const autoRotateRef = useRef(!reducedMotion);
+  autoRotateRef.current = !reducedMotion;
   // Where the root (profile) node sat once the first layout settled. Reset slides the whole graph so the
   // root is back here; no other positions are kept, so the graph's shape is free to change.
   const rootHomeRef = useRef<Vec3 | null>(null);
@@ -296,8 +289,6 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
       .strength((link: GLink) => (link.faint ? 0.35 : 1) / Math.min(degree(link.source), degree(link.target)));
     fg.d3ReheatSimulation();
 
-    scene.background = new THREE.Color(BG);
-    scene.fog = new THREE.FogExp2(BG, 0.0011);
     const starGeometry = new THREE.BufferGeometry();
     const starCount = 1600;
     const positions = new Float32Array(starCount * 3);
@@ -310,11 +301,14 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
       positions[i * 3 + 2] = r * Math.cos(phi);
     }
     starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0x8fa3c9, size: 2, sizeAttenuation: true, transparent: true, opacity: 0.55, fog: false }));
+    const starMaterial = new THREE.PointsMaterial({ size: 2, sizeAttenuation: true, transparent: true, fog: false });
+    starsRef.current = starMaterial;
+    const stars = new THREE.Points(starGeometry, starMaterial);
     stars.name = 'stars';
     scene.add(stars);
 
     const bloom = new UnrealBloomPass(new THREE.Vector2(size.width, size.height), 0.35, 0.35, 0.82);
+    bloomRef.current = bloom;
     fg.postProcessingComposer().addPass(bloom);
     fg.postProcessingComposer().addPass(new OutputPass());
 
@@ -344,12 +338,20 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
     /* eslint-enable @typescript-eslint/no-explicit-any */
   }, [api, reducedMotion, size.width, size.height]);
 
-  // The pause switch can flip while the scene is live.
+  // Ground, fog, stars and bloom follow the theme; the scene setup above runs once, so this repaints them.
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const controls = api?.controls() as any;
-    if (controls) controls.autoRotate = !reducedMotion && !motionPaused;
-  }, [api, motionPaused, reducedMotion]);
+    const fg = api;
+    if (!fg) return;
+    const scene = fg.scene();
+    scene.background = new THREE.Color(palette.background);
+    scene.fog = new THREE.FogExp2(palette.background, palette.fogDensity);
+    starsRef.current?.color.set(palette.stars.color);
+    if (starsRef.current) starsRef.current.opacity = palette.stars.opacity;
+    if (bloomRef.current) {
+      bloomRef.current.strength = palette.bloom;
+      bloomRef.current.enabled = palette.bloom > 0;
+    }
+  }, [api, palette, ready]);
 
   // Keep the graph centred in the visible area, not under the info card.
   useEffect(() => {
@@ -429,8 +431,8 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
       const on = !lit || lit.has(visual.node.id);
       const opacity = on ? 1 : 0.1;
       visual.coreMat.opacity = opacity;
-      const glow = baseGlow(visual.node);
-      visual.coreMat.emissiveIntensity = !on ? glow * 0.3 : lit && visual.node.type === 'skill' ? glow + 0.25 : glow;
+      const glow = baseGlow(visual.node) * palette.glow;
+      visual.coreMat.emissiveIntensity = !on ? glow * 0.3 : lit && visual.node.type === 'skill' ? glow + 0.25 * palette.glow : glow;
       visual.extras.forEach((extra) => { extra.mat.opacity = extra.base * (on ? 1 : 0.15); });
       const labelMat = visual.label.material as THREE.SpriteMaterial;
       labelMat.opacity = on ? 1 : 0.12;
@@ -439,7 +441,7 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
     if (reducedMotion) {
       visuals.current.forEach((visual) => visual.group.scale.setScalar(visual.node.id === selectedId ? 1.15 : 1));
     }
-  }, [lit, reducedMotion, selectedId]);
+  }, [lit, palette, reducedMotion, selectedId, theme]);
 
   // Fly the camera to the selected node.
   useEffect(() => {
@@ -533,13 +535,15 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
     return () => cancelAnimationFrame(tweenRef.current);
   }, [data, fitAll, reducedMotion, resetSignal, unpinAll]);
 
+  // A new theme hands the graph a new accessor, which makes it rebuild every node's object.
   const nodeThreeObject = useCallback((node: GNode) => {
     const existing = visuals.current.get(String(node.id));
-    if (existing) return existing.group;
-    const visual = makeVisual(node as GraphNode);
+    if (existing && existing.theme === theme) return existing.group;
+    if (existing) disposeVisual(existing);
+    const visual = makeVisual(node as GraphNode, theme);
     visuals.current.set(String(node.id), visual);
     return visual.group;
-  }, []);
+  }, [theme]);
 
   // Keep labels readable from far away: each frame, size every visible label by its own distance
   // from the camera, touching only the ones whose factor actually changed.
@@ -616,7 +620,7 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
           width={size.width}
           height={size.height}
           graphData={data}
-          backgroundColor={BG}
+          backgroundColor={palette.background}
           showNavInfo={false}
           controlType="orbit"
           rendererConfig={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
@@ -631,11 +635,11 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
           }}
           linkColor={(link) => {
             const l = link as GLink;
-            if (linkLit(l)) return KIND_LIT[l.kind];
-            if (lit) return DIM_LINK;
-            return l.faint ? FAINT_LINK : KIND_COLOR[l.kind];
+            if (linkLit(l)) return palette.linkLit[l.kind];
+            if (lit) return palette.linkDim;
+            return l.faint ? palette.linkFaint : palette.link[l.kind];
           }}
-          linkOpacity={0.55}
+          linkOpacity={palette.linkOpacity}
           linkWidth={(link) => (linkLit(link as GLink) ? 0.9 : 0)}
           linkCurvature={0.18}
           linkCurveRotation={(link) => ((idOf((link as GLink).source).length * 7) % 6) / 6 * Math.PI}
@@ -646,7 +650,7 @@ export default function Graph3D({ graph, selectedId, onSelect, visibleTypes, red
           }}
           linkDirectionalParticleSpeed={(link) => (linkLit(link as GLink) ? 0.012 : 0.004)}
           linkDirectionalParticleWidth={(link) => (linkLit(link as GLink) ? 1.8 : 1)}
-          linkDirectionalParticleColor={(link) => (linkLit(link as GLink) ? '#ffffff' : KIND_LIT[(link as GLink).kind])}
+          linkDirectionalParticleColor={(link) => (linkLit(link as GLink) ? palette.particleLit : palette.linkLit[(link as GLink).kind])}
           warmupTicks={reducedMotion || hasSettledOnce ? 300 : 30}
           cooldownTime={reducedMotion ? 0 : 4000}
           d3VelocityDecay={0.55}

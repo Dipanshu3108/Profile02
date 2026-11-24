@@ -129,6 +129,26 @@
   display: inline-block;
 }
 
+/* Two bots hop after the last word; on narrow screens they wrap below it. */
+.hero__tail {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.12em;
+}
+
+.hero__bots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: normal;
+}
+
+.hero__bot {
+  display: inline-flex;
+  flex: none;
+}
+
 .hero__headline {
   max-width: 34ch;
   margin-top: 32px;
@@ -247,6 +267,15 @@
   font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 600;
   line-height: 1.02;
+}
+
+/* Bots beside a section heading (Contact). */
+.section__bots {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 0.4em;
+  vertical-align: middle;
 }
 
 /* ================================================================== About */
@@ -551,6 +580,12 @@
 .project-card__links svg {
   width: 14px;
   height: 14px;
+}
+
+.project-card__orb {
+  flex: none;
+  /* 64px orb, but the row keeps its text height: the orb overhangs into the card's padding. */
+  margin: -22px -12px -22px -16px;
 }
 
 .project-card__action {

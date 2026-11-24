@@ -1,29 +1,24 @@
 import type { Mode } from '../types';
 
-const MODE_KEY = 'dipanshu-portfolio-mode';
-
 export interface ViewState {
   mode: Mode;
   nodeId: string | null;
 }
 
+/**
+ * Classic is the main view: every visit opens it unless the link asks for the graph
+ * (`?mode=graph`, or a `?node=` deep link). The last-used view is deliberately not remembered.
+ */
 export function readViewState(): ViewState {
   const params = new URLSearchParams(window.location.search);
   const urlMode = params.get('mode');
   const nodeId = params.get('node');
-  let storedMode: Mode | null = null;
-  try {
-    const value = window.localStorage.getItem(MODE_KEY);
-    if (value === 'classic' || value === 'graph') storedMode = value;
-  } catch {
-    // Storage can be unavailable in private browsing; the URL still works.
-  }
 
   const mode: Mode = urlMode === 'graph' || urlMode === 'classic'
     ? urlMode
     : nodeId
       ? 'graph'
-      : storedMode ?? 'classic';
+      : 'classic';
   return { mode, nodeId: mode === 'graph' ? nodeId : null };
 }
 
@@ -33,11 +28,6 @@ export function readViewState(): ViewState {
  * current entry is replaced, so node-by-node browsing does not flood the history.
  */
 export function writeViewState({ mode, nodeId }: ViewState, push = false): void {
-  try {
-    window.localStorage.setItem(MODE_KEY, mode);
-  } catch {
-    // Ignore storage failures; URL state remains authoritative.
-  }
   const url = new URL(window.location.href);
   url.search = '';
   url.searchParams.set('mode', mode);

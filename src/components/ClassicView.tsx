@@ -1,6 +1,8 @@
 import { motion, type Variants } from 'motion/react';
-import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
+import { Fragment, useEffect, useState, type MouseEvent, type ReactNode } from 'react';
+import { BotAvatar, type BotAvatarType } from 'bot-avatars';
 import type { Content } from '../types';
+import type { Theme } from '../lib/theme';
 import ProjectCard from './ProjectCard';
 import SkillChips from './SkillChips';
 import SkillMarquee from './SkillMarquee';
@@ -12,8 +14,8 @@ type Origin = { x: number; y: number };
 
 interface ClassicViewProps {
   content: Content;
+  theme: Theme;
   reducedMotion: boolean;
-  motionPaused: boolean;
   onOpenInGraph: (nodeId: string | null, origin?: Origin) => void;
 }
 
@@ -42,13 +44,31 @@ function Section({ id, title, children }: { id: string; title: ReactNode; childr
 
 let heroHasEntered = false;
 
+const HERO_BOTS: BotAvatarType[] = ['mech', 'hexagon'];
+const CONTACT_BOTS: BotAvatarType[] = ['clover', 'flower', 'ghost', 'star'];
+
+/**
+ * A working bot that starts hopping after its own random delay (0 to 1.2 s). Every working bot
+ * starts its hop cycle at the same point, so a row of them would bounce in unison; holding each one
+ * still for a moment offsets the cycles for good.
+ */
+function StaggeredBot({ type, reducedMotion }: { type: BotAvatarType; reducedMotion: boolean }) {
+  const [delay] = useState(() => Math.random() * 1200);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setStarted(true), delay);
+    return () => window.clearTimeout(timer);
+  }, [delay]);
+  return <BotAvatar className="bot-avatar" type={type} state="working" shading="plastic" size={64} paused={reducedMotion || !started} />;
+}
+
 /** Puts the role's chosen top skills first, then the rest in source order. */
 function orderByTop(ids: string[], top: string[] = []): string[] {
   const topSet = new Set(top);
   return [...top.filter((id) => ids.includes(id)), ...ids.filter((id) => !topSet.has(id))];
 }
 
-export default function ClassicView({ content, reducedMotion, motionPaused, onOpenInGraph }: ClassicViewProps) {
+export default function ClassicView({ content, theme, reducedMotion, onOpenInGraph }: ClassicViewProps) {
   const { profile, experience, education, projects, skills } = content;
   const focus = (profile.focusSkills ?? []).map((id) => skills.find((skill) => skill.id === id)?.label).filter(Boolean);
   const [animateHero] = useState(() => !heroHasEntered && !reducedMotion);
@@ -66,7 +86,7 @@ export default function ClassicView({ content, reducedMotion, motionPaused, onOp
   return (
     <div className="classic-view">
       <section className="hero" id="top">
-        <HeroNetwork reducedMotion={reducedMotion || motionPaused} />
+        <HeroNetwork reducedMotion={reducedMotion} theme={theme} />
         <div className="hero__inner">
           {focus.length > 0 && (
             <motion.button
@@ -85,21 +105,44 @@ export default function ClassicView({ content, reducedMotion, motionPaused, onOp
           )}
 
           <h1 className="hero__name" aria-label={profile.name}>
-            {nameWords.map((word, wordIndex) => (
-              <span key={word} className="hero__word" aria-hidden="true">
-                {[...word].map((letter, letterIndex) => (
-                  <motion.span
-                    key={letterIndex}
-                    className="hero__letter"
-                    initial={animateHero ? { y: '110%', rotate: 8, opacity: 0 } : false}
-                    animate={{ y: '0%', rotate: 0, opacity: 1 }}
-                    transition={{ delay: 0.15 + (wordIndex * 6 + letterIndex) * 0.035, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
-              </span>
-            ))}
+            {nameWords.map((word, wordIndex) => {
+              const letters = (
+                <span className="hero__word" aria-hidden="true">
+                  {[...word].map((letter, letterIndex) => (
+                    <motion.span
+                      key={letterIndex}
+                      className="hero__letter"
+                      initial={animateHero ? { y: '110%', rotate: 8, opacity: 0 } : false}
+                      animate={{ y: '0%', rotate: 0, opacity: 1 }}
+                      transition={{ delay: 0.15 + (wordIndex * 6 + letterIndex) * 0.035, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </span>
+              );
+              if (wordIndex < nameWords.length - 1) return <Fragment key={word}>{letters}</Fragment>;
+              // The last word carries the bot, so the two wrap onto a new line together.
+              return (
+                <span key={word} className="hero__tail">
+                  {letters}
+                  {/* Decorative: two bots hop beside the name, and hop higher when clicked. */}
+                  <span className="hero__bots" aria-hidden="true">
+                    {HERO_BOTS.map((type, index) => (
+                      <motion.span
+                        key={type}
+                        className="hero__bot"
+                        initial={animateHero ? { opacity: 0, scale: 0.6 } : false}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.7 + index * 0.12, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        <BotAvatar className="bot-avatar" type={type} shading="plastic" size={64} paused={reducedMotion} />
+                      </motion.span>
+                    ))}
+                  </span>
+                </span>
+              );
+            })}
           </h1>
 
           <motion.p
@@ -228,7 +271,7 @@ export default function ClassicView({ content, reducedMotion, motionPaused, onOp
             <h3 className="project-group__title">At {experience[0]?.organization ?? 'work'} <span className="mono">{workProjects.length}</span></h3>
             <div className="projects-grid">
               {workProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} skills={skills} onOpenInGraph={onOpenInGraph} />
+                <ProjectCard key={project.id} project={project} skills={skills} onOpenInGraph={onOpenInGraph} reducedMotion={reducedMotion} theme={theme} />
               ))}
             </div>
           </div>
@@ -236,13 +279,26 @@ export default function ClassicView({ content, reducedMotion, motionPaused, onOp
             <h3 className="project-group__title">Research and academic <span className="mono">{researchProjects.length}</span></h3>
             <div className="projects-grid">
               {researchProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} skills={skills} course={project.courseId ? courseById.get(project.courseId) : undefined} onOpenInGraph={onOpenInGraph} />
+                <ProjectCard key={project.id} project={project} skills={skills} course={project.courseId ? courseById.get(project.courseId) : undefined} onOpenInGraph={onOpenInGraph} reducedMotion={reducedMotion} theme={theme} />
               ))}
             </div>
           </div>
         </Section>
 
-        <Section id="contact" title="Contact">
+        <Section
+          id="contact"
+          title={(
+            <>
+              Contact
+              {/* Decorative: the heading's accessible name stays "Contact". */}
+              <span className="section__bots" aria-hidden="true">
+                {CONTACT_BOTS.map((type) => (
+                  <StaggeredBot key={type} type={type} reducedMotion={reducedMotion} />
+                ))}
+              </span>
+            </>
+          )}
+        >
           <div className="contact">
             <a className="contact__email" href={`mailto:${profile.email}`}>{profile.email}</a>
             <div className="contact__row">

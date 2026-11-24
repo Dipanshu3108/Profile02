@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Content } from '../types';
 import type { GraphData } from '../lib/graph';
+import type { Theme } from '../lib/theme';
 import FilterChips, { type FilterType, type VisibleTypes } from './FilterChips';
 import Graph3D from './Graph3D';
 import GraphList from './GraphList';
@@ -20,10 +21,10 @@ interface GraphViewProps {
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   reducedMotion: boolean;
-  motionPaused: boolean;
+  theme: Theme;
 }
 
-export default function GraphView({ content, graph, selectedId, onSelect, reducedMotion, motionPaused }: GraphViewProps) {
+export default function GraphView({ content, graph, selectedId, onSelect, reducedMotion, theme }: GraphViewProps) {
   const [visibleTypes, setVisibleTypes] = useState<VisibleTypes>(allVisible);
   const [resetSignal, setResetSignal] = useState(0);
 
@@ -54,11 +55,11 @@ export default function GraphView({ content, graph, selectedId, onSelect, reduce
           onSelect={onSelect}
           visibleTypes={visibleTypes}
           reducedMotion={reducedMotion}
-          motionPaused={motionPaused}
           resetSignal={resetSignal}
+          theme={theme}
         />
         <div className="graph-toolbar">
-          <FilterChips value={visibleTypes} onChange={toggleType} />
+          <FilterChips value={visibleTypes} onChange={toggleType} theme={theme} />
           <div className="graph-toolbar__actions">
             <button type="button" className="graph-tool" onClick={reset}>Reset view</button>
           </div>

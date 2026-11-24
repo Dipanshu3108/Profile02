@@ -1,7 +1,8 @@
 import { motion } from 'motion/react';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import type { Mode } from '../types';
-import { CloseIcon, GraphIcon, ListIcon, MenuIcon } from './icons';
+import type { Theme } from '../lib/theme';
+import { CloseIcon, GraphIcon, ListIcon, MenuIcon, MoonIcon, SunIcon } from './icons';
 
 interface HeaderProps {
   name: string;
@@ -9,9 +10,8 @@ interface HeaderProps {
   mode: Mode;
   onModeChange: (mode: Mode, origin?: { x: number; y: number }) => void;
   onPreloadGraph: () => void;
-  motionPaused: boolean;
-  /** Omitted when the OS already asks for reduced motion: the loops are off and the switch would do nothing. */
-  onToggleMotion?: () => void;
+  theme: Theme;
+  onThemeChange: (theme: Theme, origin: { x: number; y: number }) => void;
 }
 
 const links = [
@@ -21,24 +21,7 @@ const links = [
   { href: '#contact', label: 'Contact' },
 ];
 
-function PauseIcon() {
-  return (
-    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <rect x="4" y="3" width="2.6" height="10" rx="1" />
-      <rect x="9.4" y="3" width="2.6" height="10" rx="1" />
-    </svg>
-  );
-}
-
-function PlayIcon() {
-  return (
-    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M5 3.4v9.2a.8.8 0 0 0 1.2.7l7.4-4.6a.8.8 0 0 0 0-1.4L6.2 2.7A.8.8 0 0 0 5 3.4Z" />
-    </svg>
-  );
-}
-
-export default function Header({ name, status, mode, onModeChange, onPreloadGraph, motionPaused, onToggleMotion }: HeaderProps) {
+export default function Header({ name, status, mode, onModeChange, onPreloadGraph, theme, onThemeChange }: HeaderProps) {
   const initials = name.split(' ').map((part) => part[0]).join('').slice(0, 2);
   // Below 760px the inline section links are hidden; a menu button opens them as a list instead.
   const [menuOpen, setMenuOpen] = useState(false);
@@ -119,18 +102,19 @@ export default function Header({ name, status, mode, onModeChange, onPreloadGrap
           ))}
         </div>
 
-        {onToggleMotion && (
-          <button
-            type="button"
-            className="motion-toggle"
-            aria-pressed={motionPaused}
-            aria-label="Pause background animation"
-            title={motionPaused ? 'Play background animation' : 'Pause background animation'}
-            onClick={onToggleMotion}
-          >
-            {motionPaused ? <PlayIcon /> : <PauseIcon />}
-          </button>
-        )}
+        <button
+          type="button"
+          className="theme-toggle"
+          aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+          title={theme === 'dark' ? 'Light theme' : 'Dark theme'}
+          onClick={(event) => {
+            const rect = event.currentTarget.getBoundingClientRect();
+            onThemeChange(theme === 'dark' ? 'light' : 'dark', { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+          }}
+        >
+          {/* Shows the theme it switches to, as in most switches of this kind. */}
+          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+        </button>
         {mode === 'classic' && (
           <button
             ref={menuButtonRef}

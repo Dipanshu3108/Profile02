@@ -1,11 +1,12 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { flushSync } from 'react-dom';
 import { MotionConfig } from 'motion/react';
 import type { Mode } from './types';
 import { content } from './lib/content';
 import { buildGraph } from './lib/graph';
-import { useMotionPaused, usePrefersReducedMotion } from './lib/motion';
+import { usePrefersReducedMotion } from './lib/motion';
 import { readViewState, subscribeToViewState, writeViewState, type ViewState } from './lib/urlState';
+import { useTheme, type Theme } from './lib/theme';
+import { circularReveal, type Origin } from './lib/reveal';
 import Header from './components/Header';
 import ClassicView from './components/ClassicView';
 import GraphErrorBoundary, { canRenderWebGL, GraphUnavailable } from './components/GraphErrorBoundary';
@@ -13,24 +14,17 @@ import GraphErrorBoundary, { canRenderWebGL, GraphUnavailable } from './componen
 const loadGraph = () => import('./components/GraphView');
 const GraphView = lazy(loadGraph);
 
-type Origin = { x: number; y: number };
-type TransitionDocument = Document & {
-  startViewTransition?: (update: () => void) => { ready: Promise<void>; finished: Promise<void> };
-};
-
 export default function App() {
   const [view, setView] = useState<ViewState>(readViewState);
   const [isFading, setIsFading] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
-  const [motionPaused, toggleMotion] = useMotionPaused();
+  const [theme, setTheme] = useTheme();
   const graph = useMemo(() => buildGraph(content), []);
   const role = content.experience[0];
   // Set when a user action changes the mode, so that change gets its own history entry.
   const pushNext = useRef(false);
 
   useEffect(() => {
-    // One dark theme for both views; the orbs read this to pick light ink.
-    document.documentElement.dataset.theme = 'dark';
     writeViewState(view, pushNext.current);
     pushNext.current = false;
   }, [view]);
@@ -49,20 +43,7 @@ export default function App() {
       return;
     }
 
-    const doc = document as TransitionDocument;
-    if (!reducedMotion && doc.startViewTransition) {
-      const x = origin?.x ?? window.innerWidth - 80;
-      const y = origin?.y ?? 40;
-      const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-      const transition = doc.startViewTransition(() => flushSync(update));
-      transition.ready.then(() => {
-        document.documentElement.animate(
-          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-          { duration: 750, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', pseudoElement: '::view-transition-new(root)' },
-        );
-      }).catch(() => undefined);
-      return;
-    }
+    if (!reducedMotion && circularReveal(update, origin ?? { x: window.innerWidth - 80, y: 40 })) return;
 
     setIsFading(true);
     window.setTimeout(() => {
@@ -70,6 +51,14 @@ export default function App() {
       window.setTimeout(() => setIsFading(false), 40);
     }, reducedMotion ? 0 : 170);
   }, [reducedMotion, view.mode, view.nodeId]);
+
+  // The new theme grows out of the switch as a circle, like the mode switch but quicker.
+  const changeTheme = useCallback((next: Theme, origin?: Origin) => {
+    if (next === theme) return;
+    const update = () => setTheme(next);
+    if (!reducedMotion && circularReveal(update, origin ?? { x: window.innerWidth - 40, y: 40 }, 520)) return;
+    update();
+  }, [reducedMotion, setTheme, theme]);
 
   const openInGraph = useCallback((nodeId: string | null, origin?: Origin) => {
     // If the chunk fails to load, still switch: the error boundary then explains what happened.
@@ -92,12 +81,12 @@ export default function App() {
           mode={view.mode}
           onModeChange={(mode, origin) => (mode === 'graph' ? openInGraph(null, origin) : changeMode(mode, origin))}
           onPreloadGraph={() => { loadGraph().catch(() => undefined); }}
-          motionPaused={motionPaused}
-          onToggleMotion={reducedMotion ? undefined : toggleMotion}
+          theme={theme}
+          onThemeChange={changeTheme}
         />
         <main id="main-content">
           {view.mode === 'classic' ? (
-            <ClassicView content={content} reducedMotion={reducedMotion} motionPaused={motionPaused} onOpenInGraph={openInGraph} />
+            <ClassicView content={content} theme={theme} reducedMotion={reducedMotion} onOpenInGraph={openInGraph} />
           ) : canRenderWebGL() ? (
             <GraphErrorBoundary onUseClassic={switchToClassic}>
               <Suspense fallback={<div className="graph-layout" />}>
@@ -107,7 +96,7 @@ export default function App() {
                   selectedId={view.nodeId}
                   onSelect={selectNode}
                   reducedMotion={reducedMotion}
-                  motionPaused={motionPaused}
+                  theme={theme}
                 />
               </Suspense>
             </GraphErrorBoundary>
@@ -119,7 +108,8 @@ export default function App() {
           <span>© {content.profile.name}</span>
           <span>
             Loading orbs by{' '}
-            <a href="https://www.npmjs.com/package/thinking-orbs" target="_blank" rel="noopener noreferrer">thinking-orbs</a>, MIT
+            <a href="https://www.npmjs.com/package/thinking-orbs" target="_blank" rel="noopener noreferrer">thinking-orbs</a>, bots by{' '}
+            <a href="https://www.npmjs.com/package/bot-avatars" target="_blank" rel="noopener noreferrer">bot-avatars</a>, MIT
           </span>
         </footer>
       </div>
