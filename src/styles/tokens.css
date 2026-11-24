@@ -1,0 +1,76 @@
+:root {
+  /* Surfaces */
+  --bg: #05070d;
+  --bg-raised: #0a0f1c;
+  --navy: #1b2742;
+  --glass: rgba(255, 255, 255, 0.035);
+  --glass-strong: rgba(14, 20, 36, 0.72);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+
+  /* Ink */
+  --ink: #eef1f6;
+  --ink-soft: #b9c1d0;
+  --ink-muted: #7d879b;
+
+  /* Accents */
+  --mint: #8bf5c8;
+  --sage: #7fa58b;
+  --blue: #6ea8ff;
+  --violet: #b79cff;
+  --sand: #f1e6cf;
+  --amber: #f5c26b;
+  --mint-light: #b6f7dc;
+  --pink: #f0a6ff; /* certifications; matches TYPE_COLOR.certification in graphColors.ts */
+
+  /*
+   * Translucent tints: one hue at a set opacity, named --<hue>-a<percent>.
+   * white = raised glass and hover fills, black = drop shadows, panel = the dark glass of
+   * bars and cards, navy = the hero's ground glow.
+   */
+  --white-a01: rgba(255, 255, 255, 0.01);
+  --white-a03: rgba(255, 255, 255, 0.03);
+  --white-a04: rgba(255, 255, 255, 0.04);
+  --white-a05: rgba(255, 255, 255, 0.05);
+  --white-a06: rgba(255, 255, 255, 0.06);
+
+  --black-a35: rgba(0, 0, 0, 0.35);
+  --black-a40: rgba(0, 0, 0, 0.4);
+  --black-a45: rgba(0, 0, 0, 0.45);
+
+  --panel-a60: rgba(8, 12, 22, 0.6);
+  --panel-a72: rgba(8, 12, 22, 0.72);
+  --panel-a88: rgba(8, 12, 22, 0.88);
+
+  --navy-a70: rgba(27, 39, 66, 0.7);
+  --navy-a90: rgba(27, 39, 66, 0.9);
+
+  --mint-a06: rgba(139, 245, 200, 0.06);
+  --mint-a08: rgba(139, 245, 200, 0.08);
+  --mint-a18: rgba(139, 245, 200, 0.18);
+  --mint-a30: rgba(139, 245, 200, 0.3);
+  --mint-a35: rgba(139, 245, 200, 0.35);
+  --mint-a40: rgba(139, 245, 200, 0.4);
+  --mint-a50: rgba(139, 245, 200, 0.5);
+
+  --amber-a07: rgba(245, 194, 107, 0.07);
+  --amber-a08: rgba(245, 194, 107, 0.08);
+  --amber-a35: rgba(245, 194, 107, 0.35);
+  --amber-a45: rgba(245, 194, 107, 0.45);
+
+  --blue-a10: rgba(110, 168, 255, 0.1);
+  --blue-a12: rgba(110, 168, 255, 0.12);
+
+  --pink-a06: rgba(240, 166, 255, 0.06);
+  --pink-a45: rgba(240, 166, 255, 0.45);
+
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --max: 1240px;
+}

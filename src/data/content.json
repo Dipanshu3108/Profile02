@@ -1,0 +1,1046 @@
+{
+  "profile": {
+    "name": "Dipanshu Singh",
+    "headline": "AI Engineer designing and building AI-powered applications from prototype to production.",
+    "about": [
+      "I'm a Machine Learning and Generative AI engineer who designs, builds, and optimizes AI-powered applications from prototype to production. I work mainly in Python, with hands-on expertise in LLMs, retrieval-augmented generation, knowledge graphs, LangGraph, AI agents, the Model Context Protocol (MCP), vector databases, and prompt engineering. I also have a solid foundation in traditional machine learning, including data preprocessing, feature engineering, and classification and regression modeling.",
+      "I design end-to-end AI workflows and system architectures, mapping components, data flow, and integrations before building. My work includes scalable AI pipelines, Graph RAG and hybrid RAG, agent tools connected to MCP servers, and LLM routing across cost, latency, and quality needs. I use AWS, GCP and Vertex AI, and AI-assisted development tools such as GitHub Copilot and Claude Code to deliver quickly while keeping code quality and production reliability high."
+    ],
+    "email": "dipanshu3108@gmail.com",
+    "socials": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/Dipanshu3108"
+      }
+    ],
+    "focusSkills": [
+      "knowledge-graphs",
+      "graph-engineering"
+    ],
+    "status": "AI/ML Engineer at Evalueserve",
+    "stats": [
+      {
+        "value": "80s → <20s",
+        "label": "Research Bot end-to-end response time after pipeline optimization",
+        "projectId": "research-bot"
+      },
+      {
+        "value": ">90%",
+        "label": "Cell-level accuracy extracting product comparison tables",
+        "projectId": "agentic-tabular-extraction"
+      },
+      {
+        "value": "583,543",
+        "label": "Police records modeled to predict crime hotspots",
+        "projectId": "crime-risk-areas"
+      },
+      {
+        "value": "84%",
+        "label": "LLaMA open-ended score after good-listener fine-tuning",
+        "projectId": "llm-common-sense-listeners"
+      }
+    ]
+  },
+  "experience": [
+    {
+      "id": "evalueserve-ai-engineer",
+      "role": "AI/ML Engineer",
+      "organization": "Evalueserve",
+      "start": "Aug 2026",
+      "end": "Present",
+      "highlights": [
+        "Built an end-to-end knowledge graph ingestion pipeline that turns raw documents into a graph, plus a retrieval pipeline with graph expansion and custom ranking that returns accurate context.",
+        "Designed the MCP architecture and prototype flow for the AI Foundation pipelines, converting solutions into MCP servers with FastMCP and exposing and running them in Langflow.",
+        "Cut Research Bot end-to-end response time from 1 minute 20 seconds to under 20 seconds by optimizing the pipeline.",
+        "Lowered token costs by improving context selection so the model receives only relevant, accurate context.",
+        "Designed reusable end-to-end ML architecture and built multi-agent no-code workflows using plain Python and LiteLLM."
+      ],
+      "skills": [
+        "artificial-intelligence",
+        "machine-learning",
+        "nlp",
+        "generative-ai",
+        "llms",
+        "rag",
+        "graph-rag",
+        "vectorless-rag",
+        "knowledge-graphs",
+        "ai-agents",
+        "langgraph",
+        "langchain",
+        "mcp",
+        "prompt-engineering",
+        "llm-routers",
+        "gateway-providers",
+        "context-compression",
+        "langflow",
+        "python",
+        "pytorch",
+        "graph-databases",
+        "neo4j",
+        "vector-databases",
+        "weaviate",
+        "sql-nosql",
+        "aws",
+        "gcp",
+        "vertex-ai",
+        "azure-openai",
+        "azure-ai-foundry",
+        "docker",
+        "git",
+        "github-copilot",
+        "claude-code",
+        "graph-engineering",
+        "fastmcp",
+        "litellm"
+      ],
+      "location": "Gurugram, hybrid",
+      "topSkills": [
+        "artificial-intelligence",
+        "machine-learning",
+        "nlp",
+        "generative-ai",
+        "llms",
+        "rag",
+        "graph-rag",
+        "vectorless-rag",
+        "knowledge-graphs",
+        "ai-agents",
+        "langgraph",
+        "mcp",
+        "prompt-engineering",
+        "llm-routers",
+        "context-compression",
+        "python",
+        "pytorch"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "asu-ms-cs-ai",
+      "institution": "Arizona State University",
+      "degree": "Master of Science in Computer Science (AI)",
+      "start": "Aug 2024",
+      "end": "May 2025",
+      "gpa": "3.67",
+      "notes": "Accelerated 4+1 program (BS + MS)"
+    },
+    {
+      "id": "asu-bs-cs",
+      "institution": "Arizona State University",
+      "degree": "Bachelor of Science in Computer Science",
+      "start": "Aug 2020",
+      "end": "May 2024",
+      "gpa": "3.68",
+      "honors": [
+        "4× Dean's List"
+      ],
+      "activities": [
+        "Tech Lead, Google Developer Student Club",
+        "Section Leader, ASU 101"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "research-bot",
+      "title": "Research Bot",
+      "summary": "Agentic Q&A pipelines with LangGraph and Graph RAG, optimized for latency, cost and answer quality.",
+      "highlights": [
+        "Cut end-to-end response time from 1 minute 20 seconds to under 20 seconds by optimizing the pipeline.",
+        "Lowered token costs by improving context selection so the model receives only relevant, accurate context.",
+        "Built agentic Q&A and parameter extraction pipelines with LangGraph for multi-step reasoning and orchestration.",
+        "Added Graph RAG to improve answer quality with both raw context and relationship data."
+      ],
+      "skills": [
+        "ai-agents",
+        "langgraph",
+        "rag",
+        "graph-rag",
+        "vectorless-rag",
+        "llms",
+        "knowledge-graphs",
+        "neo4j"
+      ],
+      "experienceId": "evalueserve-ai-engineer"
+    },
+    {
+      "id": "foundation-modules",
+      "title": "Foundation Modules (Knowledge Graphs)",
+      "summary": "Reusable end-to-end ML architecture and a Graph RAG pipeline from ingestion to querying.",
+      "highlights": [
+        "Designed the end-to-end ML architecture and workflow with modular, abstract components that can be reused.",
+        "Built the Graph RAG pipeline, including data ingestion, knowledge graph construction and query processing."
+      ],
+      "skills": [
+        "machine-learning",
+        "graph-rag",
+        "knowledge-graphs",
+        "rag",
+        "graph-engineering",
+        "neo4j",
+        "python"
+      ],
+      "experienceId": "evalueserve-ai-engineer"
+    },
+    {
+      "id": "graph-rag-poc",
+      "title": "Graph RAG",
+      "summary": "Explored graph databases and graph schema design for Graph RAG.",
+      "highlights": [
+        "Compared graph databases including Kùzu, Neo4j and ArangoDB.",
+        "Explored graph schema design for Graph RAG."
+      ],
+      "skills": [
+        "graph-rag",
+        "graph-databases",
+        "neo4j",
+        "kuzu",
+        "arangodb"
+      ],
+      "experienceId": "evalueserve-ai-engineer",
+      "kind": "poc"
+    },
+    {
+      "id": "literag",
+      "title": "LiteRAG",
+      "summary": "A knowledge-tree, vectorless approach to RAG.",
+      "highlights": [],
+      "skills": [
+        "vectorless-rag",
+        "rag"
+      ],
+      "experienceId": "evalueserve-ai-engineer",
+      "kind": "poc"
+    },
+    {
+      "id": "spreadsmart-modernization",
+      "title": "SpreadSmart Modernization",
+      "summary": "RAG implementation for metadata extraction from financial documents.",
+      "highlights": [
+        "Built the fallback RAG implementation for metadata extraction from financial documents."
+      ],
+      "skills": [
+        "rag",
+        "llms"
+      ],
+      "experienceId": "evalueserve-ai-engineer"
+    },
+    {
+      "id": "metadata-extraction-poc",
+      "title": "Metadata Extraction",
+      "summary": "Explored RAG techniques, including chunking strategies, for metadata extraction.",
+      "highlights": [
+        "Compared different RAG techniques for extracting metadata, including chunking strategies."
+      ],
+      "skills": [
+        "rag",
+        "chunking"
+      ],
+      "experienceId": "evalueserve-ai-engineer",
+      "kind": "poc"
+    },
+    {
+      "id": "llm-proxy",
+      "title": "LLM Proxy",
+      "summary": "An LLM proxy with a model catalog, routing and fallbacks, built on LiteLLM.",
+      "highlights": [],
+      "skills": [
+        "litellm",
+        "llm-routers",
+        "gateway-providers",
+        "llms"
+      ],
+      "experienceId": "evalueserve-ai-engineer",
+      "kind": "poc"
+    },
+    {
+      "id": "universal-graph-retriever",
+      "title": "Universal Graph Retriever",
+      "summary": "A proof of concept for graph-based retrieval.",
+      "highlights": [],
+      "skills": [
+        "graph-engineering"
+      ],
+      "experienceId": "evalueserve-ai-engineer",
+      "kind": "poc"
+    },
+    {
+      "id": "agentic-tabular-extraction",
+      "title": "Agentic AI for Multimodal Tabular Data Extraction",
+      "summary": "An AI agent pipeline that turns web tables and images into structured HTML, CSV and JSON.",
+      "highlights": [
+        "Built a Selenium and Gemini pipeline that extracts tables from web pages into HTML, CSV and JSON.",
+        "Preserved embedded images and semantic relationships between tables and visual elements.",
+        "Added a Streamlit interface with format selection, previews, exports and natural-language Q&A.",
+        "Achieved above 90% cell-level accuracy on Amazon product comparison tables, at about 8 seconds per table."
+      ],
+      "pdfUrl": "/docs/agentic-ai-tabular-data-extraction.pdf",
+      "skills": [
+        "python",
+        "ai-agents",
+        "llms",
+        "selenium",
+        "gemini",
+        "streamlit",
+        "beautiful-soup",
+        "pandas",
+        "computer-vision",
+        "ocr",
+        "web-scraping"
+      ],
+      "courseId": "cse-576",
+      "educationId": "asu-ms-cs-ai",
+      "team": "Team of 6"
+    },
+    {
+      "id": "crime-risk-areas",
+      "title": "Crime Analysis: Identifying Risk Areas",
+      "summary": "A graph-based spatiotemporal model for predicting crime hotspots across Phoenix ZIP codes.",
+      "highlights": [
+        "Processed 583,543 Phoenix Police Department records into daily ZIP-code counts with temporal and geospatial features.",
+        "Built a graph of 117 ZIP codes using five nearest neighbors and Haversine distance.",
+        "Implemented a graph convolutional network with batch normalization, ReLU, dropout and weighted loss for hotspot classification.",
+        "Combined spatial and temporal patterns to identify hotspots that static historical models can miss."
+      ],
+      "pdfUrl": "/docs/crime-analysis-risk-areas.pdf",
+      "skills": [
+        "machine-learning",
+        "graph-neural-networks",
+        "spatiotemporal-modeling",
+        "data-preprocessing",
+        "feature-engineering",
+        "geospatial-analysis",
+        "classification"
+      ],
+      "courseId": "cse-572",
+      "educationId": "asu-ms-cs-ai",
+      "team": "Team of 5"
+    },
+    {
+      "id": "llm-common-sense-listeners",
+      "title": "Improving LLMs’ Common Sense by Modeling Good Human Listeners",
+      "summary": "Tested whether fine-tuning LLMs on expert-labeled good and bad listener conversations changes their emotional commonsense reasoning.",
+      "highlights": [
+        "Fine-tuned GPT-3.5, Davinci-0002, Gemma 7B and LLaMA 7B on good- and bad-listener conversations from the PAIR dataset.",
+        "Evaluated closed-ended accuracy on 500 SocialIQA test questions and open-ended reasoning on a 30-question subset.",
+        "Every good-listener model outperformed its unmodified counterpart on closed-ended accuracy; every bad-listener model underperformed.",
+        "Gemma and LLaMA reached 82% and 84% open-ended scores after good-listener fine-tuning."
+      ],
+      "pdfUrl": "/docs/llm-common-sense-listeners.pdf",
+      "skills": [
+        "llms",
+        "nlp",
+        "fine-tuning",
+        "emotional-reasoning",
+        "model-evaluation",
+        "prompt-engineering"
+      ],
+      "courseId": "cse-598-odl",
+      "educationId": "asu-ms-cs-ai",
+      "team": "Team of 5"
+    },
+    {
+      "id": "probabilistic-image-inpainting",
+      "title": "Probabilistic Image Inpainting: Exploring Conditioning and Biases",
+      "summary": "Evaluated PDE and LaMa image inpainting under varied masks, noise and bias conditions.",
+      "highlights": [
+        "Implemented PyInpaint (PDE) and LaMa on CelebA with line, triangle, circle and rectangle masks.",
+        "Tested Gaussian, gamma, exponential and uniform noise conditions without training models.",
+        "Evaluated outputs with PSNR, SSIM, MSE, FID, KID and LPIPS, plus bias analysis across CelebA attributes.",
+        "Both methods were fairly robust to initial conditions; PDE showed some MSE bias on noisy images."
+      ],
+      "pdfUrl": "/docs/probabilistic-image-inpainting.pdf",
+      "skills": [
+        "computer-vision",
+        "image-inpainting",
+        "probabilistic-models",
+        "pde",
+        "lama",
+        "model-evaluation",
+        "bias-analysis"
+      ],
+      "courseId": "cse-598-prl",
+      "educationId": "asu-ms-cs-ai",
+      "team": "Team of 2"
+    },
+    {
+      "id": "securetrack",
+      "title": "SecureTrack: Personalized Security through Behavioral Insights",
+      "summary": "A proposed mobile security framework that adapts authentication to behavioral signals.",
+      "highlights": [
+        "Proposed behavioral security profiles using GPS, accelerometer and touchscreen signals for adaptive authentication.",
+        "Combined majority-vote sensor checks, outlier filtering and clustering to reduce false positives.",
+        "Designed anomaly detection with decision trees and k-means clustering, plus dynamic re-authentication.",
+        "Addressed GDPR, HIPAA and CCPA compliance with consent management, AES-256 storage and TLS 1.3 transmission."
+      ],
+      "pdfUrl": "/docs/securetrack.pdf",
+      "skills": [
+        "behavioral-analytics",
+        "machine-learning",
+        "mobile-computing",
+        "anomaly-detection",
+        "k-means-clustering",
+        "decision-trees",
+        "privacy-compliance"
+      ],
+      "courseId": "cse-535",
+      "educationId": "asu-ms-cs-ai",
+      "team": "Team of 6"
+    },
+    {
+      "id": "tic-tac-toe",
+      "title": "Tic-Tac-Toe Game",
+      "summary": "An Android Tic-Tac-Toe game with three AI difficulty levels.",
+      "highlights": [
+        "Built an Android game with Kotlin and Jetpack Compose, with easy, medium and hard AI modes.",
+        "Implemented Minimax with alpha-beta pruning for optimal hard-mode moves.",
+        "Added game reset, winner detection and persistent game history and player statistics with SQLite/Room.",
+        "Used GitHub for collaborative development and version control."
+      ],
+      "pdfUrl": "/docs/tic-tac-toe-game.pdf",
+      "skills": [
+        "kotlin",
+        "jetpack-compose",
+        "android",
+        "minimax",
+        "alpha-beta-pruning",
+        "sqlite-room",
+        "git"
+      ],
+      "courseId": "cse-535",
+      "educationId": "asu-ms-cs-ai",
+      "team": "Team of 6"
+    },
+    {
+      "id": "astro-seed",
+      "title": "Astro Seed (Capstone)",
+      "summary": "AI-driven, closed-loop aeroponic plant modules for sustainable farming on Earth and in long-duration space habitats.",
+      "highlights": [
+        "Capstone with Astro Seed, an agricultural technology startup founded out of ASU's Venture Devils program.",
+        "Worked on drone automation inside the aeroponic pod.",
+        "The module combines autonomous drones, robotic arms, predictive yield simulations and continuous AI plant monitoring to manage crop selection and growth with little manual labor."
+      ],
+      "skills": [
+        "drone-automation",
+        "artificial-intelligence"
+      ],
+      "educationId": "asu-bs-cs"
+    }
+  ],
+  "skills": [
+    {
+      "id": "artificial-intelligence",
+      "label": "Artificial intelligence",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "machine-learning",
+      "label": "Machine learning",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "nlp",
+      "label": "NLP",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "generative-ai",
+      "label": "Generative AI",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "llms",
+      "label": "LLMs",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "rag",
+      "label": "RAG",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "graph-rag",
+      "label": "Graph RAG",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "vectorless-rag",
+      "label": "Vectorless RAG",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "chunking",
+      "label": "Chunking strategies",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "knowledge-graphs",
+      "label": "Knowledge graphs",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "graph-engineering",
+      "label": "Graph engineering",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "ai-agents",
+      "label": "AI agents",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "langgraph",
+      "label": "LangGraph",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "langchain",
+      "label": "LangChain",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "mcp",
+      "label": "Model Context Protocol",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "fastmcp",
+      "label": "FastMCP",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "prompt-engineering",
+      "label": "Prompt engineering",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "llm-routers",
+      "label": "LLM routers",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "litellm",
+      "label": "LiteLLM",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "gateway-providers",
+      "label": "LLM gateways",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "context-compression",
+      "label": "Context compression",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "langflow",
+      "label": "Langflow",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "python",
+      "label": "Python",
+      "category": "Languages & tools",
+      "generic": true
+    },
+    {
+      "id": "pytorch",
+      "label": "PyTorch",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "graph-databases",
+      "label": "Graph databases",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "neo4j",
+      "label": "Neo4j",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "kuzu",
+      "label": "Kùzu",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "arangodb",
+      "label": "ArangoDB",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "vector-databases",
+      "label": "Vector databases",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "weaviate",
+      "label": "Weaviate",
+      "category": "Graphs & retrieval"
+    },
+    {
+      "id": "sql-nosql",
+      "label": "SQL & NoSQL",
+      "category": "Cloud & platforms"
+    },
+    {
+      "id": "aws",
+      "label": "AWS",
+      "category": "Cloud & platforms"
+    },
+    {
+      "id": "gcp",
+      "label": "Google Cloud",
+      "category": "Cloud & platforms"
+    },
+    {
+      "id": "vertex-ai",
+      "label": "Vertex AI",
+      "category": "Cloud & platforms"
+    },
+    {
+      "id": "azure-openai",
+      "label": "Azure OpenAI",
+      "category": "Cloud & platforms"
+    },
+    {
+      "id": "azure-ai-foundry",
+      "label": "Azure AI Foundry",
+      "category": "Cloud & platforms"
+    },
+    {
+      "id": "docker",
+      "label": "Docker",
+      "category": "Cloud & platforms",
+      "generic": true
+    },
+    {
+      "id": "git",
+      "label": "Git",
+      "category": "Languages & tools",
+      "generic": true
+    },
+    {
+      "id": "github-copilot",
+      "label": "GitHub Copilot",
+      "category": "Languages & tools",
+      "generic": true
+    },
+    {
+      "id": "claude-code",
+      "label": "Claude Code",
+      "category": "Languages & tools",
+      "generic": true
+    },
+    {
+      "id": "selenium",
+      "label": "Selenium",
+      "category": "Languages & tools"
+    },
+    {
+      "id": "gemini",
+      "label": "Gemini",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "streamlit",
+      "label": "Streamlit",
+      "category": "Languages & tools"
+    },
+    {
+      "id": "beautiful-soup",
+      "label": "Beautiful Soup",
+      "category": "Languages & tools"
+    },
+    {
+      "id": "pandas",
+      "label": "Pandas",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "computer-vision",
+      "label": "Computer vision",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "ocr",
+      "label": "OCR",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "web-scraping",
+      "label": "Web scraping",
+      "category": "Languages & tools"
+    },
+    {
+      "id": "graph-neural-networks",
+      "label": "Graph neural networks",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "spatiotemporal-modeling",
+      "label": "Spatiotemporal modeling",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "data-preprocessing",
+      "label": "Data preprocessing",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "feature-engineering",
+      "label": "Feature engineering",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "geospatial-analysis",
+      "label": "Geospatial analysis",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "classification",
+      "label": "Classification",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "fine-tuning",
+      "label": "Fine-tuning",
+      "category": "GenAI & LLMs"
+    },
+    {
+      "id": "emotional-reasoning",
+      "label": "Emotional reasoning",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "model-evaluation",
+      "label": "Model evaluation",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "image-inpainting",
+      "label": "Image inpainting",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "probabilistic-models",
+      "label": "Probabilistic models",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "pde",
+      "label": "PDE",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "lama",
+      "label": "LaMa",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "bias-analysis",
+      "label": "Bias analysis",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "behavioral-analytics",
+      "label": "Behavioral analytics",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "mobile-computing",
+      "label": "Mobile computing",
+      "category": "Mobile & games"
+    },
+    {
+      "id": "anomaly-detection",
+      "label": "Anomaly detection",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "k-means-clustering",
+      "label": "k-means clustering",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "decision-trees",
+      "label": "Decision trees",
+      "category": "Machine learning & data"
+    },
+    {
+      "id": "privacy-compliance",
+      "label": "Privacy compliance",
+      "category": "Languages & tools"
+    },
+    {
+      "id": "kotlin",
+      "label": "Kotlin",
+      "category": "Mobile & games"
+    },
+    {
+      "id": "jetpack-compose",
+      "label": "Jetpack Compose",
+      "category": "Mobile & games"
+    },
+    {
+      "id": "android",
+      "label": "Android",
+      "category": "Mobile & games"
+    },
+    {
+      "id": "minimax",
+      "label": "Minimax",
+      "category": "Mobile & games"
+    },
+    {
+      "id": "alpha-beta-pruning",
+      "label": "Alpha-beta pruning",
+      "category": "Mobile & games"
+    },
+    {
+      "id": "sqlite-room",
+      "label": "SQLite/Room",
+      "category": "Mobile & games"
+    },
+    {
+      "id": "drone-automation",
+      "label": "Drone automation",
+      "category": "Robotics & automation"
+    }
+  ],
+  "courses": [
+    {
+      "id": "cse-535",
+      "code": "CSE 535",
+      "name": "Mobile Computing"
+    },
+    {
+      "id": "cse-572",
+      "code": "CSE 572",
+      "name": "Data Mining"
+    },
+    {
+      "id": "cse-576",
+      "code": "CSE 576",
+      "name": "Natural Language Processing"
+    },
+    {
+      "id": "cse-598-odl",
+      "code": "CSE 598",
+      "name": "Operationalizing Deep Learning: A Sociotechnical Perspective",
+      "term": "Spring 2024"
+    },
+    {
+      "id": "cse-598-prl",
+      "code": "CSE 598",
+      "name": "Probabilistic Reasoning and Learning"
+    }
+  ],
+  "skillRelations": [
+    [
+      "graph-engineering",
+      "knowledge-graphs"
+    ],
+    [
+      "knowledge-graphs",
+      "graph-rag"
+    ],
+    [
+      "knowledge-graphs",
+      "graph-databases"
+    ],
+    [
+      "graph-databases",
+      "neo4j"
+    ],
+    [
+      "rag",
+      "graph-rag"
+    ],
+    [
+      "rag",
+      "vectorless-rag"
+    ],
+    [
+      "rag",
+      "vector-databases"
+    ],
+    [
+      "vector-databases",
+      "weaviate"
+    ],
+    [
+      "ai-agents",
+      "langgraph"
+    ],
+    [
+      "langgraph",
+      "langchain"
+    ],
+    [
+      "ai-agents",
+      "mcp"
+    ],
+    [
+      "mcp",
+      "fastmcp"
+    ],
+    [
+      "llm-routers",
+      "litellm"
+    ],
+    [
+      "llm-routers",
+      "gateway-providers"
+    ],
+    [
+      "generative-ai",
+      "llms"
+    ],
+    [
+      "llms",
+      "prompt-engineering"
+    ],
+    [
+      "llms",
+      "fine-tuning"
+    ],
+    [
+      "nlp",
+      "llms"
+    ],
+    [
+      "gcp",
+      "vertex-ai"
+    ],
+    [
+      "azure-openai",
+      "azure-ai-foundry"
+    ],
+    [
+      "machine-learning",
+      "graph-neural-networks"
+    ],
+    [
+      "computer-vision",
+      "ocr"
+    ],
+    [
+      "computer-vision",
+      "image-inpainting"
+    ],
+    [
+      "android",
+      "kotlin"
+    ],
+    [
+      "android",
+      "jetpack-compose"
+    ],
+    [
+      "minimax",
+      "alpha-beta-pruning"
+    ],
+    [
+      "web-scraping",
+      "selenium"
+    ],
+    [
+      "web-scraping",
+      "beautiful-soup"
+    ],
+    [
+      "graph-databases",
+      "kuzu"
+    ],
+    [
+      "graph-databases",
+      "arangodb"
+    ],
+    [
+      "rag",
+      "chunking"
+    ]
+  ],
+  "certifications": [
+    {
+      "id": "cert-ai-fluency",
+      "name": "AI Fluency: Framework and foundations",
+      "issuer": "Claude Academy",
+      "date": "Nov 2026",
+      "url": "https://academy.claude.com/verify/e2112a5f21bcd4c334be93de18f84bc5",
+      "skills": [
+        "generative-ai"
+      ]
+    },
+    {
+      "id": "cert-mcp-advanced",
+      "name": "Model Context Protocol: Advanced topics",
+      "issuer": "Claude Academy",
+      "date": "Oct 2026",
+      "url": "https://academy.claude.com/verify/2a29794e222e2935702f7aced38732fe",
+      "skills": [
+        "mcp"
+      ]
+    },
+    {
+      "id": "cert-claude-cowork",
+      "name": "Introduction to Claude Cowork",
+      "issuer": "Claude Academy",
+      "date": "Oct 2026",
+      "url": "https://academy.claude.com/verify/fc493712b7871317a82b3d518d01e70f",
+      "skills": []
+    },
+    {
+      "id": "cert-mcp-intro",
+      "name": "Introduction to Model Context Protocol",
+      "issuer": "Claude Academy",
+      "date": "Sep 2026",
+      "url": "https://academy.claude.com/verify/cc06fd238437cd73bd38bb208fdd7daf",
+      "skills": [
+        "mcp"
+      ]
+    },
+    {
+      "id": "cert-claude-platform-101",
+      "name": "Claude Platform 101",
+      "issuer": "Claude Academy",
+      "date": "Sep 2026",
+      "url": "https://academy.claude.com/verify/897856e8444327e5623bf81d3490d452",
+      "skills": [
+        "llms"
+      ]
+    },
+    {
+      "id": "cert-claude-code-in-action",
+      "name": "Claude Code in Action",
+      "issuer": "Claude Academy",
+      "date": "Sep 2026",
+      "url": "https://academy.claude.com/verify/49379d6b9da42df5805f8e9b4ec52eaf",
+      "skills": [
+        "claude-code"
+      ]
+    },
+    {
+      "id": "cert-claude-101",
+      "name": "Claude 101",
+      "issuer": "Claude Academy",
+      "date": "Sep 2026",
+      "url": "https://academy.claude.com/verify/290f0261e075cf06eef1c24a5770553d",
+      "skills": []
+    },
+    {
+      "id": "cert-agent-skills",
+      "name": "Introduction to agent skills",
+      "issuer": "Claude Academy",
+      "date": "May 2026",
+      "url": "https://academy.claude.com/verify/801721ab7ffc05930b16adbf78073ee6",
+      "skills": [
+        "ai-agents"
+      ]
+    }
+  ]
+}
